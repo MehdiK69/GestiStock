@@ -1,0 +1,50 @@
+POST http://127.0.0.1:8000/api/categories
+Content-Type: application/json
+
+{
+    "nom": "HighTech"
+}
+###
+GET http://127.0.0.1:8000/api/categories/1
+Content-Type: application/json
+###
+GET http://127.0.0.1:8000/api/categories
+Content-Type: application/json
+###
+PUT http://127.0.0.1:8000/api/categories/4
+Content-Type: application/json
+
+{
+  "nom": "Bijoux"
+}
+###
+DELETE http://127.0.0.1:8000/api/categories/4
+Content-Type: application/json
+###
+GET http://127.0.0.1:8000/api/produits
+Content-Type: application/json
+###
+POST http://127.0.0.1:8000/api/produits
+Content-Type: application/json
+
+{
+    "nom": "Savon",
+    "prix": 0.90,
+    "quantite": 350,
+    "seuil_alerte": 40,
+    "id_categorie": 3
+}
+###
+GET http://127.0.0.1:8000/api/produits/1
+Content-Type: application/json
+###
+PUT http://127.0.0.1:8000/api/produits/1
+Content-Type: application/json
+
+{
+    "nom": "Jus de pomme",
+    "prix": 1.90,
+    "quantite": 200,
+    "seuil_alerte": 25,
+    "id_categorie": 1
+}
