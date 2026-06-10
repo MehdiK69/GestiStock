@@ -38,7 +38,7 @@ final class ProduitController extends AbstractController
     }
 
     #[Route('/api/produits/{id}', name: 'get_produit_by_id',methods: ['GET'])]
-    public function getlProduitbyId(ProduitRepository $pr,int $id): JsonResponse
+    public function getOneProduit(ProduitRepository $pr,int $id): JsonResponse
     {
         $produit = $pr->find($id);
         if(empty($produit)){
@@ -84,7 +84,7 @@ final class ProduitController extends AbstractController
     }
 
     #[Route('/api/produits/{id}', name: 'update_produit',methods: ['PUT'])]
-    public function modifierProduit(Request $request,ProduitRepository $pr,CategorieRepository $cr,EntityManagerInterface $emi,int $id): JsonResponse
+    public function modifyProduit(Request $request,ProduitRepository $pr,CategorieRepository $cr,EntityManagerInterface $emi,int $id): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $produit = $pr->find($id);
@@ -111,6 +111,18 @@ final class ProduitController extends AbstractController
             'id_categorie' => $produit->getCategorie()->getId(),
             'nom_categorie' => $produit->getCategorie()->getNom()
         ]);
+    }
+
+    #[Route('/api/produits/{id}', name: 'delete_produit_by_id', methods: ['DELETE'])]
+    public function deleteProduitById(ProduitRepository $pr,CategorieRepository $cr,EntityManagerInterface $emi, int $id): JsonResponse
+    {
+        $produit = $pr->find($id);
+        if (!$produit) {
+            return $this->json(['message' => 'Produit non trouvée'], Response::HTTP_NOT_FOUND);
+        }
+        $emi->remove($produit);
+        $emi->flush();
+        return $this->json(['message' => 'Produit supprimé'], Response::HTTP_OK);
     }
 
 

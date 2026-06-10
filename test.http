@@ -48,3 +48,32 @@ Content-Type: application/json
     "seuil_alerte": 25,
     "id_categorie": 1
 }
+###
+DELETE http://127.0.0.1:8000/api/produits/4
+Content-Type: application/json
+###
+GET http://127.0.0.1:8000/api/mouvements
+Content-Type: application/json
+###
+GET http://127.0.0.1:8000/api/mouvements/1
+Content-Type: application/json
+###
+POST http://127.0.0.1:8000/api/mouvements
+Content-Type: application/json
+
+{
+"type": "ajout",
+"quantite": 50,
+"date": "2026-06-01",
+"id_produit": 1
+}
+###
+PUT http://127.0.0.1:8000/api/mouvements/1
+Content-Type: application/json
+
+{
+    "type": "retrait",
+    "quantite": 50,
+    "date": "2026-06-02",
+    "id_produit": 1
+}
