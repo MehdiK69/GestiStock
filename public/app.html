@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="script.js"></script>
+</head>
+<body>
+    <div id="content"></div>
+    <h1>GestiStock</h1>
+
+    <nav>
+        <ul>
+            <li><a href="http://127.0.0.1:8000/api/categories">Catégories</a></li>
+            <li><a href="http://127.0.0.1:8000/api/produits">Produits</a></li>
+            <li><a href="http://127.0.0.1:8000/api/mouvements">Mouvements</a></li>
+        </ul>
+    </nav>
+
+
+    <table>
+        <caption>
+            Tableau Catégories
+        </caption>
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nom</th>
+        </tr>
+        </thead>
+        <tbody id="tbody-categories">
+        <tr>
+
+            <td>1</td>
+            <td>Boissons</td>
+        </tr>
+        </tbody>
+    </table>
+    <button id="addCat" onclick="afficherFormCategorie()">Ajouter</button>
+    <form id="form-categorie"></form>
+
+
+
+
+
+    <table>
+        <caption>
+            Tableau Produits
+        </caption>
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Prix</th>
+            <th scope="col">Quantité</th>
+            <th scope="col">Seuil alerte</th>
+            <th scope="col">ID Categorie</th>
+        </tr>
+        </thead>
+        <tbody id="tbody-produits">
+        <tr>
+            <td>1</td>
+            <td>Orangina</td>
+            <td>1,90</td>
+            <td>250</td>
+            <td>15</td>
+            <td>2</td>
+        </tr>
+        </tbody>
+    </table>
+    <button onclick="afficherFormProduit()">Ajouter</button>
+    <form id="form-produit"></form>
+
+    <table>
+        <caption>
+            Tableau Mouvements
+        </caption>
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Quantité</th>
+            <th scope="col">Type</th>
+            <th scope="col">Date</th>
+            <th scope="col">ID Produit</th>
+        </tr>
+        </thead>
+        <tbody id="tbody-mouvements">
+        <tr>
+            <td></td>
+            <td>1</td>
+            <td>50</td>
+            <td>Ajout</td>
+            <td>2026/06/04</td>
+            <td>2</td>
+
+        </tr>
+        </tbody>
+    </table>
+    <button>Ajouter</button>
+
+</body>
+</html>
