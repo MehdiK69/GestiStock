@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\StockService;
 
 
 final class MouvementController extends AbstractController
@@ -63,16 +64,11 @@ final class MouvementController extends AbstractController
             return $this->json(['message' => 'Produit inexistant'], Response::HTTP_NOT_FOUND);
         }
         $mouvement = new Mouvement();
-        $mouvement->setType($data['type']);
-        if($mouvement->getType()=='ajout'){
-            $produit->setQuantite($produit->getQuantite()+$data['quantite']);
-        }
-        if($mouvement->getType()=='retrait'){
-            $produit->setQuantite($produit->getQuantite()-$data['quantite']);
-        }
         $mouvement->setQuantite($data['quantite']);
         $mouvement->setDate(new \DateTimeImmutable($data['date']));
         $mouvement->setProduit($produit);
+        $stockService = new StockService();
+        $stockService->appliquerMouvement($produit, $mouvement);
         $emi->persist($mouvement);
         $emi->persist($produit);
         $emi->flush();
@@ -135,15 +131,8 @@ final class MouvementController extends AbstractController
             return $this->json(['message' => 'Mouvement inexistant'], Response::HTTP_NOT_FOUND);
         }
         $produit = $mouvement->getProduit();
-        if ($mouvement->getType() == 'ajout') {
-            $nouvelleQuantite = $produit->getQuantite() - $mouvement->getQuantite();
-        } else {
-            $nouvelleQuantite = $produit->getQuantite() + $mouvement->getQuantite();
-        }
-        if ($nouvelleQuantite < 0) {
-            return $this->json(['message' => 'Stock invalide'], Response::HTTP_BAD_REQUEST);
-        }
-        $produit->setQuantite($nouvelleQuantite);
+        $stockService = new StockService();
+        $stockService->annulerMouvement($produit, $mouvement);
 
         $emi->persist($produit);
         $emi->remove($mouvement);
