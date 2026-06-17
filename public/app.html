@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
     <div id="content"></div>
@@ -36,7 +37,7 @@
         </tr>
         </tbody>
     </table>
-    <button id="addCat" onclick="afficherFormCategorie()">Ajouter</button>
+    <button class="btn-add" onclick="afficherFormCategorieAdd()">Ajouter</button>
     <form id="form-categorie"></form>
 
 
@@ -68,7 +69,7 @@
         </tr>
         </tbody>
     </table>
-    <button onclick="afficherFormProduit()">Ajouter</button>
+    <button class="btn-add" onclick="afficherFormProduit()">Ajouter</button>
     <form id="form-produit"></form>
 
     <table>
@@ -96,7 +97,8 @@
         </tr>
         </tbody>
     </table>
-    <button>Ajouter</button>
+    <button class="btn-add">Ajouter</button>
 
 </body>
+<script src="script.js"></script>
 </html>

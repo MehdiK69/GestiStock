@@ -63,9 +63,9 @@ Content-Type: application/json
 
 {
 "type": "ajout",
-"quantite": 50,
+"quantite": 25,
 "date": "2026-06-01",
-"id_produit": 1
+"id_produit": 10
 }
 ###
 PUT http://127.0.0.1:8000/api/mouvements/1
@@ -77,3 +77,5 @@ Content-Type: application/json
     "date": "2026-06-02",
     "id_produit": 1
 }
+###
+DELETE http://127.0.0.1:8000/mouvements/5

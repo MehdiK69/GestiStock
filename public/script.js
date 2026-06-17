@@ -18,9 +18,15 @@
 
     const tdAction = document.createElement('td');
 
+    const btnModify = document.createElement('button');
+    btnModify.textContent = 'Modifier';
+    btnModify.className = 'btn-edit';
+    btnModify.onclick = () => afficherFormCategorieEdit(categorie.id);
     const btnDelete = document.createElement('button');
     btnDelete.textContent = 'Supprimer';
+    btnDelete.className = 'btn-delete';
     btnDelete.onclick = () => deleteCategorie(categorie.id);
+    tdAction.appendChild(btnModify);
     tdAction.appendChild(btnDelete);
 
     tr.appendChild(tdId);
@@ -60,9 +66,16 @@
         tdCatId.textContent = produit.id_categorie;
 
         const tdAction = document.createElement('td');
+
+        const btnModify = document.createElement('button');
+        btnModify.textContent = 'Modifier';
+        btnModify.className = 'btn-edit';
+        btnModify.onclick = () => afficherFormProduitEdit(produit.id);
         const btnDelete = document.createElement('button');
         btnDelete.textContent = 'Supprimer';
+        btnDelete.className = 'btn-delete';
         btnDelete.onclick = () => deleteProduit(produit.id);
+        tdAction.appendChild(btnModify);
         tdAction.appendChild(btnDelete);
 
         tr.appendChild(tdId);
@@ -71,7 +84,7 @@
         tr.appendChild(tdQtite);
         tr.appendChild(tdSeuil);
         tr.appendChild(tdCatId);
-        tr.appendChild(btnDelete);
+        tr.appendChild(tdAction);
         tbody.appendChild(tr);
 });
 }
@@ -97,17 +110,36 @@
     tdType.textContent = mouvement.type;
 
     const tdDate = document.createElement('td');
-    tdDate.textContent = mouvement.date;
-
+    tdDate.textContent = new Date(mouvement.date).
+    toLocaleString('fr-FR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
     const tdProdId = document.createElement('td');
-    tdProdId.textContent = mouvement.produit_id;
+    tdProdId.textContent = mouvement.id_produit;
 
+    const tdAction = document.createElement('td');
+
+    const btnModify = document.createElement('button');
+    btnModify.textContent = 'Modifier';
+    btnModify.className = 'btn-edit';
+
+    const btnDelete = document.createElement('button');
+    btnDelete.textContent = 'Supprimer';
+    btnDelete.className = 'btn-delete';
+    btnDelete.onclick = () => deleteMouvement(mouvement.id);
+    tdAction.appendChild(btnModify);
+    tdAction.appendChild(btnDelete);
 
     tr.appendChild(tdId);
     tr.appendChild(tdQtite);
     tr.appendChild(tdType);
     tr.appendChild(tdDate);
     tr.appendChild(tdProdId);
+    tr.appendChild(tdAction);
     tbody.appendChild(tr);
 });
 }
@@ -128,7 +160,27 @@
         }
     }
 
-    function afficherFormCategorie(){
+    async function modifyCategorie(id,nom) {
+        const data = {nom:nom};
+        const url = `http://127.0.0.1:8000/api/categories/${id}`;
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) {
+                throw new Error('Erreur modification');
+            }
+            loadCategories();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function afficherFormCategorieAdd(){
 
         const form = document.getElementById('form-categorie');
         form.innerHTML = '';
@@ -139,10 +191,28 @@
         label.textContent = 'Nom: ';
         form.appendChild(label);
         form.appendChild(inputNom);
-        form.appendChild(btnValider1);
-        btnValider1.onclick = () => {
+        form.appendChild(btnValider);
+        btnValider.onclick = () => {
             console.log(inputNom.value);
             addCategorie(inputNom.value);
+        }
+    }
+
+    function afficherFormCategorieEdit(id){
+
+        const form = document.getElementById('form-categorie');
+        form.innerHTML = '';
+        const label = document.createElement("label");
+        const inputNom = document.createElement("input")
+        const btnValider = document.createElement("button");
+        btnValider.textContent = 'Valider';
+        label.textContent = 'Nom: ';
+        form.appendChild(label);
+        form.appendChild(inputNom);
+        form.appendChild(btnValider);
+        btnValider.onclick = () => {
+            console.log(inputNom.value);
+            modifyCategorie(id,inputNom.value);
         }
     }
     async function addCategorie(nom){
@@ -190,8 +260,8 @@
         labelIdCat.textContent = 'Id Categorie: '
         const inputIdCat = document.createElement("input")
 
-        const btnValider2 = document.createElement("button");
-        btnValider2.textContent = 'Valider';
+        const btnValider = document.createElement("button");
+        btnValider.textContent = 'Valider';
 
         form.appendChild(labelNom);
         form.appendChild(inputNom);
@@ -203,12 +273,61 @@
         form.appendChild(inputSeuil);
         form.appendChild(labelIdCat);
         form.appendChild(inputIdCat);
-        form.appendChild(btnValider2);
-        btnValider2.onclick = () =>{
-            addProduit(inputNom.value,parseFloat(inputPrix.value),parseInt(inputQtite.value),parseInt(inputSeuil.value),parseInt(inputIdCat.value));
+        form.appendChild(btnValider);
+        btnValider.onclick = () =>{
+            addProduit(inputNom.value, parseFloat(inputPrix.value), parseInt(inputQtite.value), parseInt(inputSeuil.value), parseInt(inputIdCat.value));
+            console.log("RAW:", inputPrix.value);
+            console.log("REPLACED:", inputPrix.value.replace(',', '.'));
+
         }
     }
 
+    function afficherFormProduitEdit(id){
+
+        const form = document.getElementById('form-produit');
+        form.innerHTML = '';
+
+        const labelNom = document.createElement("label");
+        labelNom.textContent = 'Nom: '
+        const inputNom = document.createElement("input")
+
+        const labelPrix = document.createElement("label");
+        labelPrix.textContent = 'Prix: '
+        const inputPrix = document.createElement("input")
+
+        const labelQtite = document.createElement("label");
+        labelQtite.textContent = 'Quantite: '
+        const inputQtite = document.createElement("input")
+
+        const labelSeuil = document.createElement("label");
+        labelSeuil.textContent = 'Seuil alerte: '
+        const inputSeuil = document.createElement("input")
+
+        const labelIdCat = document.createElement("label");
+        labelIdCat.textContent = 'Id Categorie: '
+        const inputIdCat = document.createElement("input")
+
+        const btnValider = document.createElement("button");
+        btnValider.textContent = 'Valider';
+
+        form.appendChild(labelNom);
+        form.appendChild(inputNom);
+        form.appendChild(labelPrix);
+        form.appendChild(inputPrix);
+        form.appendChild(labelQtite);
+        form.appendChild(inputQtite);
+        form.appendChild(labelSeuil);
+        form.appendChild(inputSeuil);
+        form.appendChild(labelIdCat);
+        form.appendChild(inputIdCat);
+        form.appendChild(btnValider);
+        btnValider.onclick = () =>{
+            modifyProduit(id,inputNom.value, parseFloat(inputPrix.value), parseInt(inputQtite.value), parseInt(inputSeuil.value), parseInt(inputIdCat.value));
+            console.log("RAW:", inputPrix.value);
+            console.log("REPLACED:", inputPrix.value.replace(',', '.'));
+
+        }
+    }
     async function addProduit(nom,prix,quantite,seuil,idcat){
         const data = {nom:nom,prix:prix,quantite:quantite,seuil_alerte:seuil,id_categorie:idcat};
         const url = "http://127.0.0.1:8000/api/produits";
@@ -244,6 +363,40 @@
         }
     }
 
+    async function modifyProduit(id,nom,prix,quantite,seuil,idcat) {
+        const data = {nom:nom,prix:prix,quantite:quantite,seuil_alerte: seuil,id_categorie:idcat};
+        const url = `http://127.0.0.1:8000/api/produits/${id}`;
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) {
+                throw new Error('Erreur modification');
+            }
+            loadProduits();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function deleteMouvement(id){
+        const url = `http://127.0.0.1:8000/api/mouvements/${id}`;
+        try{
+            const response = await fetch(url, {
+                method: 'DELETE'
+            });
+            if (!response.ok) {
+                throw new Error('Erreur suppression');
+            }
+            loadMouvements();
+        }catch (error) {
+            console.error(error);
+        }
+    }
 
 loadCategories();
 loadProduits();

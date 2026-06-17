@@ -128,5 +128,26 @@ final class MouvementController extends AbstractController
         ]);
     }
 
+    #[Route('/api/mouvements/{id}', name: 'delete_mouvement',methods: ['DELETE'])]
+    public function deleteMouvement(MouvementRepository $mr,EntityManagerInterface $emi, int $id): JsonResponse{
+        $mouvement = $mr->find($id);
+        if (!$mouvement) {
+            return $this->json(['message' => 'Mouvement inexistant'], Response::HTTP_NOT_FOUND);
+        }
+        $produit = $mouvement->getProduit();
+        if ($mouvement->getType() == 'ajout') {
+            $nouvelleQuantite = $produit->getQuantite() - $mouvement->getQuantite();
+        } else {
+            $nouvelleQuantite = $produit->getQuantite() + $mouvement->getQuantite();
+        }
+        if ($nouvelleQuantite < 0) {
+            return $this->json(['message' => 'Stock invalide'], Response::HTTP_BAD_REQUEST);
+        }
+        $produit->setQuantite($nouvelleQuantite);
 
+        $emi->persist($produit);
+        $emi->remove($mouvement);
+        $emi->flush();
+        return $this->json([]);
+    }
 }
